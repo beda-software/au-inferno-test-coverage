@@ -1,6 +1,35 @@
 # AU Inferno Test Coverage
 A repository containing text, code, and resources focused on addressing the challenge of achieving IG coverage through Inferno tests.
 
+## Notes:
+
+At the current step, we have several implemented inferno test types:
+
+- Basic search
+- Search using combo parameters
+- Search by specific identifier
+- Search with _include
+- Search with _revinclude
+- Read
+- Validation of the target resource
+- Checking elements of the target resource (Must Support)
+- Checking references of the target resource (Must Support)
+
+What tests are not implemented, but look like they should:
+
+- Create
+- Update
+- Delete
+- ... something can be missed because it exists in the narrative of the IG, but does not exist as a machine-readable part.
+
+These implemented tests send requests to the target FHIR server every run, which means that we can collect and analyze them in reports:
+- Basic search
+- Search using combo parameters
+- Search by specific identifier
+- Search with _include
+- Search with _revinclude
+- Read
+
 ## References
 ### Documentation
 - https://build.fhir.org/testing.html
