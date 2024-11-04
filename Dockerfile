@@ -6,4 +6,4 @@ COPY . .
 
 RUN bundle install
 
-CMD ["ruby", "code/inferno-report-to-fhir-test-report.rb"]
+CMD ["ruby", "code/inferno_report_to_fhir_test_report.rb"]
