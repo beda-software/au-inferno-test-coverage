@@ -1,7 +1,7 @@
 # Coverage
 ## Participants
 ### TestPlan
-Can be generated on the suite generation step. Their resource needs to keep an ID list of each test in the suite. Also, it can keep the required narrative of the test, for example: the title, and description.
+Can be generated on the suite generation step. This resource needs to keep an ID list of each test in the suite. Also, it can keep the required narrative of the test, for example: the title, and description.
 
 <details>
 <summary>
@@ -42,7 +42,9 @@ Example of the TestPlan resource with a single test ID
 This JSON file generates as default report of the Inferno framework. Users can get the file through the URL: https://inferno.hl7.org.au/api/test_sessions/your-session-id/results
 
 <details>
-<summary>Example of the Inferno report with a single test<summary>
+<summary>
+Example of the Inferno report with a single test
+</summary>
 
 ```json
 [
