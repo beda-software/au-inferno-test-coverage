@@ -143,9 +143,6 @@ Example of the TestReport with assert, message, and request
 }
 ```
 </details>
-<<<<<<< Updated upstream
-=======
-
 
 ## IDEA: FHIRConformanceDSL
 Emphasizes its focus on conformance to FHIR Implementation Guides.
@@ -204,4 +201,3 @@ Emphasizes its focus on conformance to FHIR Implementation Guides.
   ['(SHALL) MustSupport references within Observation resources are valid', ['SHALL', 'CHECK_MUST_SUPPORT', 'Observation']]
 ]
 ```
->>>>>>> Stashed changes
