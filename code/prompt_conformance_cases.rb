@@ -102,7 +102,34 @@ def main
     data << add_item
   end
 
-  File.write(file_path, JSON.pretty_generate(data))
+  test_cases = data.map do |item|
+    { testRun: [{
+      narrative: item[0],
+      script: {
+        sourceString: item[1]
+      }
+    }] }
+  end
+
+  test_plan = {
+    'resourceType' => 'TestPlan',
+    'id' => 'example',
+    'extension' => [{
+      'url' => 'http://hl7.org/fhir/StructureDefinition/structuredefinition-wg',
+      'valueCode' => 'fhir'
+    }],
+    'status' => 'draft',
+    'publisher' => 'HL7 International / FHIR Infrastructure',
+    'testCase' => JSON.generate(test_cases),
+    'contact' => [{
+      'telecom' => [{
+        'system' => 'url',
+        'value' => 'http://www.hl7.org/Special/committees/fiwg'
+      }]
+    }]
+  }
+
+  File.write(file_path, JSON.pretty_generate(test_plan))
   puts "Data saved to #{file_path}"
 end
 
