@@ -88,6 +88,7 @@ def add_item
   end
 
   description = "(#{obligation}) Server returns valid results for #{resource_type} #{action_type.downcase}"
+  description += " with parameters #{parameters.map { |param| param.join(': ') }.join(', ')}" unless parameters.empty?
   [description, [obligation, action_type, resource_type, parameters]]
 end
 
