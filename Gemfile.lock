@@ -1,12 +1,18 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    highline (3.1.1)
+      reline
+    io-console (0.7.2)
+    reline (0.5.10)
+      io-console (~> 0.5)
 
 PLATFORMS
   ruby
   x86_64-linux
 
 DEPENDENCIES
+  highline (~> 3.1.1)
 
 BUNDLED WITH
    2.5.16

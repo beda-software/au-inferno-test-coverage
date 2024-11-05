@@ -143,3 +143,65 @@ Example of the TestReport with assert, message, and request
 }
 ```
 </details>
+<<<<<<< Updated upstream
+=======
+
+
+## IDEA: FHIRConformanceDSL
+Emphasizes its focus on conformance to FHIR Implementation Guides.
+
+```
+(SHOULD) Server returns valid results for Patient search by name
+['SHOULD', 'SEARCH', 'Patient', [['name]]]
+
+(SHOULD) Server returns valid results for Patient search by birthdate + family
+['SHOULD', 'SEARCH', 'Patient', [['birthdate'], ['family']]]
+
+(SHOULD) Server returns valid results for Patient search by identifier (IHI)
+['SHOULD', 'SEARCH', 'Patient', [['identifier', 'http://ns.electronichealth.net.au/id/hi/ihi/1.0']]]
+
+(SHOULD) Server returns Practitioner resources from PractitionerRole search by _id and PractitionerRole:practitioner
+['SHOULD', 'SEARCH', 'PractitionerRole', [['_include', 'PractitionerRole:practitioner']]]
+
+(SHALL) Server returns correct Patient resource from Patient read interaction
+['SHALL', 'READ', 'Patient']
+
+(SHALL) Patient resources returned during previous tests conform to the AU Core Patient
+['SHALL', 'CONFORMS', 'Patient']
+
+(SHALL) All must support elements are provided in the Patient resources returned
+['SHALL', 'VALIDATE_REFERENCES', 'Patient']
+
+(SHALL) MustSupport references within Observation resources are valid
+['SHALL', 'CHECK_MUST_SUPPORT', 'Observation']
+```
+
+### Narrative + expression
+```
+[
+  '(SHOULD) Server returns valid results for Patient search by name',
+  [
+    'SHOULD',
+    'SEARCH',
+    'Patient',
+    [
+      ['name]
+    ]
+  ]
+]
+```
+
+### Full set for IG
+```
+[
+  ['(SHOULD) Server returns valid results for Patient search by name', ['SHOULD', 'SEARCH', 'Patient', [['name]]]],
+  ['(SHOULD) Server returns valid results for Patient search by birthdate + family',['SHOULD', 'SEARCH', 'Patient', [['birthdate'['family']]]]],
+  ['(SHOULD) Server returns valid results for Patient search by identifier (IHI)', ['SHOULD', 'SEARCH', 'Patient', [['identifier', 'http://ns.electronichealth.net.au/id/hi/ihi/1.0']]]],
+  ['(SHOULD) Server returns Practitioner resources from PractitionerRole search by _id and PractitionerRole:practitioner', ['SHOULD', 'SEARCH', 'PractitionerRole', [['_include', 'PractitionerRole:practitioner']]]],
+  ['(SHALL) Server returns correct Patient resource from Patient read interaction', ['SHALL', 'READ', 'Patient']],
+  ['(SHALL) Patient resources returned during previous tests conform to the AU Core Patient', ['SHALL', 'CONFORMS', 'Patient']],
+  ['(SHALL) All must support elements are provided in the Patient resources returned', ['SHALL', 'VALIDATE_REFERENCES', 'Patient']],
+  ['(SHALL) MustSupport references within Observation resources are valid', ['SHALL', 'CHECK_MUST_SUPPORT', 'Observation']]
+]
+```
+>>>>>>> Stashed changes
