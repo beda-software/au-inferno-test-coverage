@@ -63,6 +63,24 @@ def compare_arrays(arr1, arr2)
   end
 end
 
+def puts_status(status_string)
+  result_string = "--> Result is: #{status_string}"
+  case status_string
+  when 'not_implemented'
+    result_string.colorize(:gray)
+  when 'pass'
+    result_string.colorize(:green)
+  end
+end
+
+def extract_request_details(request)
+  {
+    :action => request_fhir_action = get_fhir_action(request['verb'], request['url']),
+    :resource => request_fhir_resource = extract_resource_type(request['url']),
+    :params => request_params_with_values = extract_params_with_values(request['url'])
+  }
+end
+
 def main
   if ARGV.length != 2
     puts 'Usage: ruby script.rb <file_path_1> <file_path_2>'
@@ -75,34 +93,50 @@ def main
   inferno_report = read_json(file_path_2)
 
   test_cases = test_plan['testCase']
+  test_cases_count = test_cases.length
+  passed_cases = 0
 
-  test_cases.each do |test_case|
-    puts "Started processing test case: #{test_case.dig('testRun', 0, 'narrative')}"
+  puts "#{test_cases_count} were found in the TestPlan resource. Starting execution..."
+
+  test_cases.each_with_index do |test_case, index|
+    status = 'not_implemented'
+
+    puts "-> #{index+1}/#{test_cases_count} #{test_case.dig('testRun', 0, 'narrative')}"
     test_case_expression = JSON.parse(test_case.dig('testRun', 0, 'script', 'sourceString'))
-    test_case_fhir_action = test_case_expression[1]
-    test_case_fhir_resource = test_case_expression[2]
-    test_case_params = test_case_expression[3]
-    case test_case_fhir_action
+    tc_action, tc_resource, tc_params = test_case_expression[1..-1]
+
+    case tc_action
+    when 'read'
+
     when 'search-type'
       inferno_report.each do |test_run|
         requests = test_run['requests'] || []
         requests.each do |request|
-          request_fhir_action = get_fhir_action(request['verb'], request['url'])
-          request_fhir_resource = extract_resource_type(request['url'])
-          request_params_with_values = extract_params_with_values(request['url'])
+          r_action, r_resource, r_params = extract_request_details(request).values_at(:action, :resource, :params)
 
-          unless test_case_fhir_action == request_fhir_action && test_case_fhir_resource == request_fhir_resource && test_case_params.length == request_params_with_values.length
+          unless tc_action == r_action && tc_resource == r_resource && tc_params.length == r_params.length
             next
           end
 
-          compare_result = compare_arrays(test_case_params, request_params_with_values)
+          compare_result = compare_arrays(tc_params, r_params)
           next unless compare_result == true
 
-          puts "✅ PASS (#{test_run['test_id']})".colorize(:green) if test_run['result'] == 'pass'
+          puts "--> INFO: Case was found in #{test_run['test_id']}".colorize(:blue)
+
+          status = test_run['result']
         end
       end
     end
+
+    if status == 'pass'
+      passed_cases += 1
+    end
+
+    puts puts_status(status)
   end
+
+  puts "\nCoverage is: #{passed_cases}/#{test_cases_count}"
+
 end
 
 main
