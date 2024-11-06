@@ -49,7 +49,9 @@ def extract_resource_type(url)
 end
 
 def extract_params_with_values(url)
-  url.split('?').last.split('&').map { |param| param.split('=') }.filter { |param| ![["_count", "10"], ["_count", "1"]].include?(param) }
+  url.split('?').last.split('&').map do |param|
+    param.split('=')
+  end.filter { |param| ![%w[_count 10], %w[_count 1]].include?(param) }
 end
 
 def compare_arrays(arr1, arr2)
@@ -72,11 +74,11 @@ def main
   test_plan = read_json(file_path_1)
   inferno_report = read_json(file_path_2)
 
-  test_cases = JSON.parse(test_plan['testCase'])
+  test_cases = test_plan['testCase']
 
   test_cases.each do |test_case|
     puts "Started processing test case: #{test_case.dig('testRun', 0, 'narrative')}"
-    test_case_expression = test_case.dig('testRun', 0, 'script', 'sourceString')
+    test_case_expression = JSON.parse(test_case.dig('testRun', 0, 'script', 'sourceString'))
     test_case_fhir_action = test_case_expression[1]
     test_case_fhir_resource = test_case_expression[2]
     test_case_params = test_case_expression[3]
@@ -94,11 +96,9 @@ def main
           end
 
           compare_result = compare_arrays(test_case_params, request_params_with_values)
-          if compare_result == true
-            if test_run['result'] == 'pass'
-              puts "✅ PASS (#{test_run['test_id']})".colorize(:green)
-            end
-          end
+          next unless compare_result == true
+
+          puts "✅ PASS (#{test_run['test_id']})".colorize(:green) if test_run['result'] == 'pass'
         end
       end
     end
