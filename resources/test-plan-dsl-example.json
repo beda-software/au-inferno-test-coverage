@@ -1,0 +1,104 @@
+{
+  "resourceType": "TestPlan",
+  "id": "example",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-wg",
+      "valueCode": "fhir"
+    }
+  ],
+  "status": "draft",
+  "publisher": "HL7 International / FHIR Infrastructure",
+  "testCase": [
+    {
+      "testRun": [
+        {
+          "narrative": "(SHOULD) Server returns valid results for Patient search-type with parameters name",
+          "script": {
+            "sourceString": "[\"SHOULD\",\"search-type\",\"Patient\",[[\"name\"]]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHOULD) Server returns valid results for Patient search-type with parameters birthdate, family",
+          "script": {
+            "sourceString": "[\"SHOULD\",\"search-type\",\"Patient\",[[\"birthdate\"],[\"family\"]]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHOULD) Server returns valid results for Patient search-type with parameters identifier: http://ns.electronichealth.net.au/id/hi/ihi/1.0",
+          "script": {
+            "sourceString": "[\"SHOULD\",\"search-type\",\"Patient\",[[\"identifier\",\"http://ns.electronichealth.net.au/id/hi/ihi/1.0\"]]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHOULD) Server returns valid results for PractitionerRole search-type with parameters _include: PractitionerRole:practitioner",
+          "script": {
+            "sourceString": "[\"SHOULD\",\"search-type\",\"PractitionerRole\",[[\"_include\",\"PractitionerRole:practitioner\"]]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHALL) Server returns valid results for Patient read",
+          "script": {
+            "sourceString": "[\"SHALL\",\"read\",\"Patient\",[]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHALL) Server returns valid results for Patient conforms",
+          "script": {
+            "sourceString": "[\"SHALL\",\"conforms\",\"Patient\",[]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHALL) Server returns valid results for Patient validate-references",
+          "script": {
+            "sourceString": "[\"SHALL\",\"validate-references\",\"Patient\",[]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHALL) Server returns valid results for Observation check-must-support",
+          "script": {
+            "sourceString": "[\"SHALL\",\"check-must-support\",\"Observation\",[]]"
+          }
+        }
+      ]
+    }
+  ],
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.hl7.org/Special/committees/fiwg"
+        }
+      ]
+    }
+  ]
+}
