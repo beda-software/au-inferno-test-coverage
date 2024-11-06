@@ -75,9 +75,9 @@ end
 
 def extract_request_details(request)
   {
-    :action => request_fhir_action = get_fhir_action(request['verb'], request['url']),
-    :resource => request_fhir_resource = extract_resource_type(request['url']),
-    :params => request_params_with_values = extract_params_with_values(request['url'])
+    action: get_fhir_action(request['verb'], request['url']),
+    resource: extract_resource_type(request['url']),
+    params: extract_params_with_values(request['url'])
   }
 end
 
@@ -104,22 +104,18 @@ def main
     current_inferno_runs = []
     status = 'not_implemented'
 
-    puts "-> #{index+1}/#{test_cases_count} #{test_case.dig('testRun', 0, 'narrative')}"
+    puts "-> #{index + 1}/#{test_cases_count} #{test_case.dig('testRun', 0, 'narrative')}"
     test_case_expression = JSON.parse(test_case.dig('testRun', 0, 'script', 'sourceString'))
     tc_action, tc_resource, tc_params = test_case_expression[1..-1]
 
     case tc_action
-    when 'read'
-
     when 'search-type'
       inferno_report.each do |test_run|
         requests = test_run['requests'] || []
         requests.each do |request|
           r_action, r_resource, r_params = extract_request_details(request).values_at(:action, :resource, :params)
 
-          unless tc_action == r_action && tc_resource == r_resource && tc_params.length == r_params.length
-            next
-          end
+          next unless tc_action == r_action && tc_resource == r_resource && tc_params.length == r_params.length
 
           compare_result = compare_arrays(tc_params, r_params)
           next unless compare_result == true
@@ -134,7 +130,7 @@ def main
 
     if status == 'pass'
       passed_cases += 1
-      coverage_cases << { :tp_case => test_case, :inferno_cases => current_inferno_runs }
+      coverage_cases << { tp_case: test_case, inferno_cases: current_inferno_runs }
     end
 
     puts puts_status(status)
@@ -143,7 +139,6 @@ def main
   puts "\nCoverage is: #{passed_cases}/#{test_cases_count}"
 
   puts coverage_cases.to_json
-
 end
 
 main
