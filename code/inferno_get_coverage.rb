@@ -96,9 +96,12 @@ def main
   test_cases_count = test_cases.length
   passed_cases = 0
 
+  coverage_cases = []
+
   puts "#{test_cases_count} were found in the TestPlan resource. Starting execution..."
 
   test_cases.each_with_index do |test_case, index|
+    current_inferno_runs = []
     status = 'not_implemented'
 
     puts "-> #{index+1}/#{test_cases_count} #{test_case.dig('testRun', 0, 'narrative')}"
@@ -124,18 +127,22 @@ def main
           puts "--> INFO: Case was found in #{test_run['test_id']}".colorize(:blue)
 
           status = test_run['result']
+          current_inferno_runs << test_run
         end
       end
     end
 
     if status == 'pass'
       passed_cases += 1
+      coverage_cases << { :tp_case => test_case, :inferno_cases => current_inferno_runs }
     end
 
     puts puts_status(status)
   end
 
   puts "\nCoverage is: #{passed_cases}/#{test_cases_count}"
+
+  puts coverage_cases.to_json
 
 end
 
