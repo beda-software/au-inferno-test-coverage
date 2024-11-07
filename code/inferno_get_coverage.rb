@@ -3,6 +3,7 @@
 require 'json'
 require 'colorize'
 require_relative 'constants'
+require_relative 'inferno_report_to_fhir_test_report'
 
 def read_json(file_path)
   JSON.parse(File.read(file_path))
@@ -81,6 +82,29 @@ def extract_request_details(request)
   }
 end
 
+def build_test_entry(coverage_case)
+  {
+    'name' => coverage_case.dig(:inferno_cases).map { |inferno_case| inferno_case['id'] }.join(', '),
+    'description' => coverage_case.dig(:tp_case, 'testRun', 0, 'narrative'),
+    'action' => coverage_case.dig(:inferno_cases).map do |inferno_case|
+      build_assert_actions(inferno_case) + build_requests_actions(inferno_case) + build_messages_actions(inferno_case)
+    end.flatten
+  }
+end
+
+def build_test_report(coverage_cases)
+  {
+    'resourceType' => 'TestReport',
+    'name' => 'Inferno Test Report',
+    'status' => 'completed',
+    'testScript' => 'TestScript/au_core_v100_ballot',
+    'result' => 'pass',
+    'score' => 0,
+    'tester' => 'Inferno',
+    'test' => coverage_cases.map { |coverage_case| build_test_entry(coverage_case) }
+  }
+end
+
 def main
   if ARGV.length != 2
     puts 'Usage: ruby script.rb <file_path_1> <file_path_2>'
@@ -138,7 +162,14 @@ def main
 
   puts "\nCoverage is: #{passed_cases}/#{test_cases_count}"
 
-  puts coverage_cases.to_json
+  File.write(
+    'test-report.json',
+    JSON.pretty_generate(
+      build_test_report(
+        coverage_cases
+      )
+    )
+  )
 end
 
 main
