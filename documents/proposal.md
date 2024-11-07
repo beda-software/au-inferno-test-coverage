@@ -31,9 +31,10 @@ These implemented tests send requests to the target FHIR server every run, which
 
 The Inferno report consists of a JSON file that includes a list of all test runs of the session.
 
+<details>
 <summary>
-<description>
 Inferno report example
+</summary>
 
 ```json
 [
@@ -84,8 +85,8 @@ Inferno report example
     }
 ]
 ```
-</description>
-</summary>
+
+</details>
 
 ## Proposal
 
