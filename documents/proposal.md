@@ -1,5 +1,6 @@
 # Implementation of the tool for AU Core IG coverage report by Inferno tests
 ## Problem
+Implement a way to get the coverage of the Implementation Guide by Inferno tests.
 ## Initial data
 
 At the current step, we have several implemented inferno test types:
@@ -89,4 +90,193 @@ Inferno report example
 </details>
 
 ## Proposal
+We suggest using the TestPlan FHIR resource with a combination of a Domain-Specific Language (DSL) designed to describe and track the coverage of test scenarios in the Inferno testing framework, focusing on FHIR compliance. By using a custom DSL, we aim to simplify the reporting, readability, and extensibility of test coverage, ensuring that each scenario is clearly defined, easily parsed, and consistent with FHIR implementation requirements.
 
+The DSL captures critical aspects of each test scenario—such as action type, resource type, and parameters—allowing testers and developers to define and document coverage requirements in a concise, accessible way. This proposal details the DSL syntax, provides examples with explanations, and evaluates the pros and cons of the current approach.
+
+### DSL Format
+
+Each test case in the DSL is represented as an array. The structure of each entry is as follows:
+
+```
+['REQUIREMENT', 'ACTION', 'RESOURCE_TYPE', PARAMETERS]
+```
+
+- **REQUIREMENT**: Specifies whether the test is mandatory (`SHALL`) or recommended (`SHOULD`).
+- **ACTION**: Indicates the type of action to be validated, such as `SEARCH`, `READ`, `CONFORMS`, `VALIDATE_REFERENCES`, or `CHECK_MUST_SUPPORT`.
+- **RESOURCE_TYPE**: Defines the FHIR resource type being tested, like `Patient`, `PractitionerRole`, or `Observation`.
+- **PARAMETERS**: Lists search parameters, reference elements, or other specifics, in an array structure to accommodate complex scenarios.
+
+### Examples with Descriptions
+
+Below are sample test cases in the DSL format with explanations.
+
+#### Example 1: Patient Search by Name
+
+**DSL Representation**:
+```plaintext
+['SHOULD', 'SEARCH', 'Patient', [['name']]]
+```
+
+#### Example 2: Patient Search by Birthdate + Family Name
+
+**DSL Representation**:
+```plaintext
+['SHOULD', 'SEARCH', 'Patient', [['birthdate'], ['family']]]
+```
+
+#### Example 3: Patient Search by Identifier (IHI)
+
+**DSL Representation**:
+```plaintext
+['SHOULD', 'SEARCH', 'Patient', [['identifier', 'http://ns.electronichealth.net.au/id/hi/ihi/1.0']]]
+```
+
+#### Example 4: Practitioner Role with _include
+
+**DSL Representation**:
+```plaintext
+['SHOULD', 'SEARCH', 'PractitionerRole', [['_include', 'PractitionerRole:practitioner']]]
+```
+
+#### Example 5: Patient Resource Conformance
+
+**DSL Representation**:
+```plaintext
+['SHALL', 'CONFORMS', 'Patient']
+```
+
+#### Example 6: Must Support References
+
+**DSL Representation**:
+```plaintext
+['SHALL', 'CHECK_MUST_SUPPORT', 'Observation']
+```
+
+### Pros and Cons
+
+#### Pros
+
+1. **Simplicity and Clarity**: The DSL is straightforward, making it easy for both humans and machines to parse. It separates critical test components into structured, predictable entries.
+2. **Concise Format**: Each test is compactly represented, making it easy to read, store, and scan large sets of test cases quickly.
+3. **Flexibility with Parameters**: The array structure allows for flexible and complex parameter configurations, which is essential for FHIR search functionality.
+4. **Extensibility**: The DSL’s design makes it adaptable; new action types or test requirements can be added without disrupting existing tests.
+
+### Example of the TestPlan resource with DSL
+<details>
+<summary>Example</summary>
+
+```json
+{
+  "resourceType": "TestPlan",
+  "id": "example",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-wg",
+      "valueCode": "fhir"
+    }
+  ],
+  "status": "draft",
+  "publisher": "HL7 International / FHIR Infrastructure",
+  "testCase": [
+    {
+      "testRun": [
+        {
+          "narrative": "(SHOULD) Server returns valid results for Patient search-type with parameters name",
+          "script": {
+            "sourceString": "[\"SHOULD\",\"search-type\",\"Patient\",[[\"name\"]]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHOULD) Server returns valid results for Patient search-type with parameters birthdate, family",
+          "script": {
+            "sourceString": "[\"SHOULD\",\"search-type\",\"Patient\",[[\"birthdate\"],[\"family\"]]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHOULD) Server returns valid results for Patient search-type with parameters identifier: http://ns.electronichealth.net.au/id/hi/ihi/1.0",
+          "script": {
+            "sourceString": "[\"SHOULD\",\"search-type\",\"Patient\",[[\"identifier\",\"http://ns.electronichealth.net.au/id/hi/ihi/1.0\"]]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHOULD) Server returns valid results for PractitionerRole search-type with parameters _include: PractitionerRole:practitioner",
+          "script": {
+            "sourceString": "[\"SHOULD\",\"search-type\",\"PractitionerRole\",[[\"_include\",\"PractitionerRole:practitioner\"]]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHALL) Server returns valid results for Patient read",
+          "script": {
+            "sourceString": "[\"SHALL\",\"read\",\"Patient\",[]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHALL) Server returns valid results for Patient conforms",
+          "script": {
+            "sourceString": "[\"SHALL\",\"conforms\",\"Patient\",[]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHALL) Server returns valid results for Patient validate-references",
+          "script": {
+            "sourceString": "[\"SHALL\",\"validate-references\",\"Patient\",[]]"
+          }
+        }
+      ]
+    },
+    {
+      "testRun": [
+        {
+          "narrative": "(SHALL) Server returns valid results for Observation check-must-support",
+          "script": {
+            "sourceString": "[\"SHALL\",\"check-must-support\",\"Observation\",[]]"
+          }
+        }
+      ]
+    }
+  ],
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.hl7.org/Special/committees/fiwg"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+### How to create a TestPlan resource
+
+In the first step, this resource with the set of test cases described by DSL can be generated through an automatic generator based on the data from the Implementation Guide content as it is implemented for the AU Core Inferno suite. 
+
+The next updates of this file can be provided by IG implementers handly. For this feature, we can implement a simple CLI with a prompt interface to create/update/delete cases. In the case of the implementation of the CLI, the DSL can be hidden from implementers at all. See the example of the ruby script here. 
