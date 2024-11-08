@@ -90,10 +90,10 @@ Inferno report example
 </details>
 
 According to the FHIR specification, the `TestPlan` resource can be used to describe the purpose, dependencies, scope, test environment, test framework, test output, etc. It contains test cases that can outline narrative test entry/exit criteria, test data, and more.
-(Reference to the specification)
+([Reference to the specification](http://hl7.org/fhir/testplan.html))
 
 To keep the test reports in FHIR format, we can use the `TestReport` resource. This resource defines how systems should encode the summarized results of executing a `TestScript`.
-(Reference to the specification)
+([Reference to the specification](http://hl7.org/fhir/testreport.html))
 
 The IG test coverage pipeline could work as follows:
 
