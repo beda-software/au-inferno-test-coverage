@@ -375,4 +375,4 @@ Future work may include enhancing tooling, such as a CLI, to simplify DSL creati
 ![Parameter](../assets/images/6-parameter.png)
 ![Another Parameter](../assets/images/7-another-parameter.png)
 ![Another item](../assets/images/8-another-item.png)
-![Coverage](../assets/images/9-coverage.png`)
+![Coverage](../assets/images/9-coverage.png)
