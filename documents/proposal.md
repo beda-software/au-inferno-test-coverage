@@ -1,6 +1,6 @@
 # Implementation of the tool for AU Core IG coverage report by Inferno tests
 ## Problem
-Implement a way to get the coverage of the Implementation Guide by Inferno tests.
+Implement a way to get the coverage of the Implementation Guide by Inferno tests. The solution should be easy to maintain: the developer of the IG can add/update/delete test cases using simple tooling whenever something is changed in the IG.
 ## Initial data
 
 At the current step, we have several implemented inferno test types:
@@ -106,6 +106,17 @@ Challenges in this pipeline:
 
 1. There is no way to describe the details of a test case in the `TestPlan` resource without using `TestScript` or other tools; only high-level narratives are available. This makes it difficult to compare a high-level test case description with a test in the Inferno report. While it’s theoretically possible to implement this using LLMs, their results are often unstable and unpredictable.
 2. There is a heavy dependency on the `TestScript` resource.
+
+### Why can't we use default resources such as TestPlan, TestScript, and TestReport?
+
+The main challenge is the dependency on TestScript resources, which limits flexibility. Currently, TestPlan only allows high-level descriptions, making it difficult to convey technical details for specific test cases. For example, if we need to verify a GET request to the responder with specific parameters, we can describe this in natural language, but it’s difficult to translate these descriptions into machine-readable results.
+
+While TestScript could technically support this, it presents challenges for IG developers, as shown by real-world TestScript examples written in SUSHI:
+
+1. https://github.com/beda-software/fhir-emr/blob/master/resources/tests/TestScript/testscript-create-healthcare-service.fsh
+2. https://github.com/beda-software/fhir-emr/blob/master/resources/tests/TestScript/testscript-edit-healthcare-service.fsh
+
+To address this, we believe there should be an alternative way to define test cases in a more natural language style, making them both easy to write and understand while retaining machine-readability. TestScript, in its current form, doesn’t meet these needs effectively.
 
 ## Proposal
 We suggest using the TestPlan FHIR resource with a combination of a Domain-Specific Language (DSL) designed to describe and track the coverage of test scenarios in the Inferno testing framework, focusing on FHIR compliance. By using a custom DSL, we aim to simplify the reporting, readability, and extensibility of test coverage, ensuring that each scenario is clearly defined, easily parsed, and consistent with FHIR implementation requirements.
@@ -365,14 +376,51 @@ The `TestPlan` resource offers a structured way to outline test cases, while the
 
 Future work may include enhancing tooling, such as a CLI, to simplify DSL creation and maintenance, making the process even more accessible to IG implementers. With this framework in place, FHIR developers and implementers can more efficiently verify and document the conformance of FHIR implementations to specified IG requirements.
 
-## Examples
+## PS. Another way to describe the case
 
-![Create file](../assets/images/1-create-file.png)
-![New item](../assets/images/2-new-item.png)
-![Obligation](../assets/images/3-obligation.png)
-![Action](../assets/images/4-action.png)
-![Resource](../assets/images/5-resource.png)
-![Parameter](../assets/images/6-parameter.png)
-![Another Parameter](../assets/images/7-another-parameter.png)
-![Another item](../assets/images/8-another-item.png)
-![Coverage](../assets/images/9-coverage.png)
+### Array style
+
+```json
+['SHOULD', 'SEARCH', 'PractitionerRole', [['_include', 'PractitionerRole:practitioner']]]
+```
+
+### Object style
+
+```json
+[
+    {
+        'obligation': 'SHOULD',
+        'action': 'search-type',
+        'resource': 'Patient',
+        'params': [
+            {
+                'name': 'name'
+            }
+        ]
+    },
+    {
+        'obligation': 'SHOULD',
+        'action': 'search-type',
+        'resource': 'Patient',
+        'params': [
+            {
+                'name': 'name'
+            },
+            {
+                'name: 'birthdate'
+            }
+        ]
+    },
+    {
+        'obligation': 'SHOULD',
+        'action': 'search-type',
+        'resource': 'PractitionerRole',
+        'params': [
+            {
+                'name': '_include',
+                'value: 'PractitionerRole:practitioner'
+            }
+        ]
+    },
+]
+```
