@@ -104,7 +104,7 @@ The IG test coverage pipeline could work as follows:
 
 ### Challenges in the Pipeline:
 
-1. **Limited Descriptive Capability of TestPlan**: The `TestPlan` resource provides only high-level narratives, lacking detailed descriptions for individual test cases unless combined with `TestScript` or similar tools. This limitation makes it difficult to align high-level test case descriptions with actual tests in the Inferno report. Although large language models (LLMs) could theoretically generate detailed descriptions, their results are often unstable and unpredictable.
+1. **Limited Descriptive Capability of TestPlan**: The `TestPlan` resource provides only high-level narratives, lacking detailed descriptions for individual test cases unless combined with `TestScript` or similar tools. This limitation makes it difficult to align high-level test case descriptions with actual tests in the Inferno report. 
 
 2. **Heavy Dependency on TestScript**: The `TestScript` resource can offer detailed test case information, but its complexity poses a significant barrier for Implementation Guide (IG) developers. Additionally, the primary goal here isn’t to test FHIR server functionality but to validate the contents of the Inferno report.
 
