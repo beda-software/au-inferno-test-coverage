@@ -110,7 +110,7 @@ The IG test coverage pipeline could work as follows:
 
 ### Objectives for the Tool:
 
-Our goal is to create a tool that IG developers can easily understand and maintain while ensuring it is machine-readable. Unfortunately, combining `TestPlan` with `TestScript` does not meet this need due to `TestPlan`’s overly high-level narratives and `TestScript`'s complexity.
+Our goal is to create a tool that IG developers can `easily understand` and `maintain` while ensuring it is `machine-readable`. Unfortunately, combining `TestPlan` with `TestScript` does not meet this need due to `TestPlan`’s overly high-level narratives and `TestScript`'s complexity.
 
 ### Tool Structure Requirements:
 
