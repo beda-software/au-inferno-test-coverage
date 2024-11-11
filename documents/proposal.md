@@ -381,7 +381,7 @@ Future work may include enhancing tooling, such as a CLI, to simplify DSL creati
 ### Array style
 
 ```json
-['SHOULD', 'SEARCH', 'PractitionerRole', [['_include', 'PractitionerRole:practitioner']]]
+["SHOULD", "SEARCH", "PractitionerRole", [["_include", "PractitionerRole:practitioner"]]]
 ```
 
 ### Object style
@@ -389,38 +389,138 @@ Future work may include enhancing tooling, such as a CLI, to simplify DSL creati
 ```json
 [
     {
-        'obligation': 'SHOULD',
-        'action': 'search-type',
-        'resource': 'Patient',
-        'params': [
+        "expectation": "SHOULD",
+        "action": "search-type",
+        "resource": "Patient",
+        "params": [
             {
-                'name': 'name'
+                "name": "name"
             }
         ]
     },
     {
-        'obligation': 'SHOULD',
-        'action': 'search-type',
-        'resource': 'Patient',
-        'params': [
+        "expectation": "SHOULD",
+        "action": "search-type",
+        "resource": "Patient",
+        "params": [
             {
-                'name': 'name'
+                "name": "name"
             },
             {
-                'name: 'birthdate'
+                "name": "birthdate"
             }
         ]
     },
     {
-        'obligation': 'SHOULD',
-        'action': 'search-type',
-        'resource': 'PractitionerRole',
-        'params': [
+        "expectation": "SHOULD",
+        "action": "search-type",
+        "resource": "PractitionerRole",
+        "params": [
             {
-                'name': '_include',
-                'value: 'PractitionerRole:practitioner'
+                "name": "_include",
+                "value": "PractitionerRole:practitioner"
             }
         ]
-    },
+    }
 ]
+```
+
+### Object style as extension
+
+```json
+{
+  "resourceType": "TestPlan",
+  "id": "example-testplan",
+  "extension": [
+    {
+      "url": "http://example.org/fhir/StructureDefinition/testplan-inferno-actions-extension",
+      "extension": [
+        {
+          "url": "expectation",
+          "valueString": "SHOULD"
+        },
+        {
+          "url": "action",
+          "valueString": "search-type"
+        },
+        {
+          "url": "resource",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "params",
+          "extension": [
+            {
+              "url": "name",
+              "valueString": "name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "http://example.org/fhir/StructureDefinition/testplan-inferno-actions-extension",
+      "extension": [
+        {
+          "url": "expectation",
+          "valueString": "SHOULD"
+        },
+        {
+          "url": "action",
+          "valueString": "search-type"
+        },
+        {
+          "url": "resource",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "params",
+          "extension": [
+            {
+              "url": "name",
+              "valueString": "name"
+            },
+            {
+              "url": "name",
+              "valueString": "birthdate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "http://example.org/fhir/StructureDefinition/testplan-inferno-actions-extension",
+      "extension": [
+        {
+          "url": "expectation",
+          "valueString": "SHOULD"
+        },
+        {
+          "url": "action",
+          "valueString": "search-type"
+        },
+        {
+          "url": "resource",
+          "valueCode": "PractitionerRole"
+        },
+        {
+          "url": "params",
+          "extension": [
+            {
+              "url": "name",
+              "valueString": "_include"
+            },
+            {
+              "url": "value",
+              "valueString": "PractitionerRole:practitioner"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "title": "Example Test Plan",
+  "status": "active"
+}
+
 ```
