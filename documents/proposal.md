@@ -102,21 +102,24 @@ The IG test coverage pipeline could work as follows:
 3. The implementer runs a specific script that analyzes the Inferno report using `TestPlan` resources to identify coverage.
 4. As a result, the implementer receives a `TestReport` resource that includes coverage details about which tests were passed, failed, or skipped. Additionally, the `TestReport` provides supporting information about messages sent to Inferno, requests made, etc.
 
-Challenges in this pipeline:
+### Challenges in the Pipeline:
 
-1. There is no way to describe the details of a test case in the `TestPlan` resource without using `TestScript` or other tools; only high-level narratives are available. This makes it difficult to compare a high-level test case description with a test in the Inferno report. While it’s theoretically possible to implement this using LLMs, their results are often unstable and unpredictable.
-2. There is a heavy dependency on the `TestScript` resource.
+1. **Limited Descriptive Capability of TestPlan**: The `TestPlan` resource provides only high-level narratives, lacking detailed descriptions for individual test cases unless combined with `TestScript` or similar tools. This limitation makes it difficult to align high-level test case descriptions with actual tests in the Inferno report. Although large language models (LLMs) could theoretically generate detailed descriptions, their results are often unstable and unpredictable.
 
-### Why can't we use default resources such as TestPlan, TestScript, and TestReport?
+2. **Heavy Dependency on TestScript**: The `TestScript` resource can offer detailed test case information, but its complexity poses a significant barrier for Implementation Guide (IG) developers. Additionally, the primary goal here isn’t to test FHIR server functionality but to validate the contents of the Inferno report.
 
-The main challenge is the dependency on TestScript resources, which limits flexibility. Currently, TestPlan only allows high-level descriptions, making it difficult to convey technical details for specific test cases. For example, if we need to verify a GET request to the responder with specific parameters, we can describe this in natural language, but it’s difficult to translate these descriptions into machine-readable results.
+### Objectives for the Tool:
 
-While TestScript could technically support this, it presents challenges for IG developers, as shown by real-world TestScript examples written in SUSHI:
+Our goal is to create a tool that IG developers can easily understand and maintain while ensuring it is machine-readable. Unfortunately, combining `TestPlan` with `TestScript` does not meet this need due to `TestPlan`’s overly high-level narratives and `TestScript`'s complexity.
 
-1. https://github.com/beda-software/fhir-emr/blob/master/resources/tests/TestScript/testscript-create-healthcare-service.fsh
-2. https://github.com/beda-software/fhir-emr/blob/master/resources/tests/TestScript/testscript-edit-healthcare-service.fsh
+### Tool Structure Requirements:
 
-To address this, we believe there should be an alternative way to define test cases in a more natural language style, making them both easy to write and understand while retaining machine-readability. TestScript, in its current form, doesn’t meet these needs effectively.
+Each test case should clearly address these four questions:
+
+1. **Expectation**: What is the compliance level? (e.g., SHALL, SHOULD, MAY)
+2. **FHIR Action**: What type of action is required?
+3. **FHIR Resource**: Which FHIR resource is involved?
+4. **Parameters**: What specific parameters are needed?
 
 ## Proposal
 We suggest using the TestPlan FHIR resource with a combination of a Domain-Specific Language (DSL) designed to describe and track the coverage of test scenarios in the Inferno testing framework, focusing on FHIR compliance. By using a custom DSL, we aim to simplify the reporting, readability, and extensibility of test coverage, ensuring that each scenario is clearly defined, easily parsed, and consistent with FHIR implementation requirements.
