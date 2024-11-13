@@ -8,13 +8,6 @@ According to the FHIR specification, the `TestPlan` resource can be used to desc
 To keep the test reports in FHIR format, we can use the `TestReport` resource. This resource defines how systems should encode the summarized results of executing a `TestScript`.
 ([Reference to the specification](http://hl7.org/fhir/testreport.html))
 
-The IG test coverage pipeline could work as follows:
-
-1. `TestPlan` resources are created and distributed as part of the AU Core Implementation Guide.
-2. The implementer runs the Inferno suite and generates a default Inferno report in JSON format.
-3. The implementer runs a specific script that analyzes the Inferno report using `TestPlan` resources to identify coverage.
-4. As a result, the implementer receives a `TestReport` resource that includes coverage details about which tests were passed, failed, or skipped. Additionally, the `TestReport` provides supporting information about messages sent to Inferno, requests made, etc.
-
 ### Challenges in the Pipeline:
 
 1. **Limited Descriptive Capability of TestPlan**: The `TestPlan` resource provides only high-level narratives, lacking detailed descriptions for individual test cases unless combined with `TestScript` or similar tools. This limitation makes it difficult to align high-level test case descriptions with actual tests in the Inferno report. 
@@ -78,7 +71,7 @@ Example of the TestPlan resource with a single test ID
 ```
 </details>
 
-#### Inferno test report
+##### Inferno test report
 This JSON file generates as default report of the Inferno framework. Users can get the file through the URL: https://inferno.hl7.org.au/api/test_sessions/your-session-id/results
 
 <details>
@@ -137,7 +130,7 @@ Example of the Inferno report with a single test
 ```
 </details>
 
-#### TestReport
+##### TestReport
 Can be generated on the combination of the TestPlan and Inferno report. It should have a list of each test ID with assert results and other required test run details.
 
 <details>
@@ -183,3 +176,6 @@ Example of the TestReport with assert, message, and request
 }
 ```
 </details>
+
+## Conclusion
+As a result, we can get a simple workflow to calculate the coverage of the IG which is easy to read, understand and maintain. 
