@@ -1,6 +1,8 @@
 # AU Inferno Test Coverage
 A repository containing text, code, and resources focused on addressing the challenge of achieving IG coverage through Inferno tests.
 
+![Feedback-driven Pipeline](assets/images/feedback-driven-pipeline.png)
+
 ## Notes:
 
 At the current step, we have several implemented inferno test types:
