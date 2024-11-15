@@ -50,7 +50,10 @@ if Dir.exist?(directory_path)
                     "narrative": find_value_in_file(test_file_path_with_id, 'title'),
                     "script": {
                       "sourceReference": {
-                        "reference": "TestScript/#{find_value_in_file(test_file_path_with_id, 'id :')}"
+                        "identifier": {
+                          "system": 'https://github.com/hl7au/au-fhir-core-inferno',
+                          "value": find_value_in_file(test_file_path_with_id, 'id :')
+                        }
                       }
                     }
                   }
@@ -84,4 +87,3 @@ if Dir.exist?(directory_path)
 else
   puts "Directory not found: #{directory_path}"
 end
-
