@@ -1,0 +1,16 @@
+RuleSet: AddCase(narrative, id)
+* testCase.testRun[+]
+  * narrative = {narrative}
+  * script.sourceReference.identifier.system = "https://github.com/hl7au/au-fhir-core-inferno"
+  * script.sourceReference.identifier.value = {id}
+
+Instance: example
+InstanceOf: TestPlan
+Usage: #example
+* extension.url = "http://hl7.org/fhir/StructureDefinition/structuredefinition-wg"
+* extension.valueCode = #fhir
+* status = #draft
+* publisher = "HL7 International / FHIR Infrastructure"
+<% cases.each do |test_case| %>
+* insert AddCase("<%= test_case["narrative"] %>", "<%= test_case["id"] %>")
+<% end %>
