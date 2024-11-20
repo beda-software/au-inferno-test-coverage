@@ -1,22 +1,45 @@
-# Coverage
+# Inferno Test Coverage of an IG
 ## Problem
-Implement a way to get the coverage of the Implementation Guide by Inferno tests. The solution should be easy to maintain: the developer of the IG can add/update/delete test cases using simple tooling whenever something is changed in the IG.
+
+We want a mechanism to determine a tool's test coverage of a FHIR Implementation Guide (IG). Specifically, this involves answering the question: "To what extent does the test tool (Inferno Test Kit) test the requirements specified in a FHIR IG?"
 
 According to the FHIR specification, the `TestPlan` resource can be used to describe the purpose, dependencies, scope, test environment, test framework, test output, etc. It contains test cases that can outline narrative test entry/exit criteria, test data, and more.
 ([Reference to the specification](http://hl7.org/fhir/testplan.html))
 
-To keep the test reports in FHIR format, we can use the `TestReport` resource. This resource defines how systems should encode the summarized results of executing a `TestScript`.
-([Reference to the specification](http://hl7.org/fhir/testreport.html))
+As the `TestPlan` resource describes "what to test", we can leverage it to systematically evaluate whether Inferno test(s) can/ will be implemented for each test case to determine the Inferno Test Kit's test coverage of an IG.
 
-### Challenges in the Pipeline:
+While most conformance requirements are encapsulated as machine-readable content in `CapabilityStatement`s, some requirements are expressed in narrative format. Consequently, the testing pipeline must support a flexible and adaptive framework capable of integrating both auto-generated and manually curated test cases.
 
-1. **Limited Descriptive Capability of TestPlan**: The `TestPlan` resource provides only high-level narratives, lacking detailed descriptions for individual test cases unless combined with `TestScript` or similar tools. This limitation makes it difficult to align high-level test case descriptions with actual tests in the Inferno report. 
+### Challenges in the Testing Pipeline:
 
-2. **Heavy Dependency on TestScript**: The `TestScript` resource can offer detailed test case information, but its complexity poses a significant barrier for Implementation Guide (IG) developers. Additionally, the primary goal here isn’t to test FHIR server functionality but to validate the contents of the Inferno report.
+The following highlights key challenges inherent in the current design of FHIR `TestScript` and `TestReport` resources which limit flexibility and usability across diverse testing tools and methodologies.
+
+#### Key Issues:
+1. **Rigid and Fully Specified TestScripts**
+
+    - FHIR `TestScript`s are required to be fully specified, meaning they must contain all the details necessary for two independently developed test execution engines to interpret and execute a test in exactly the same way. While this approach ensures consistency, it raises the bar significantly for anyone wanting to write tests for FHIR APIs. Implementers must either:
+      - Learn to write `TestScript`s according to the strict requirements, which can be a steep learning curve, or
+      - Use their existing tools and workflows for testing RESTful APIs, sacrificing alignment with FHIR standards.
+    - This expectation disincentivises adoption of FHIR's testing standards by forcing a difficult choice: abandon familiar testing methodologies or undertake complex integrations to fit the strict framework. 
+2. **Limited Scope and Usability of TestReport**
+    - The current `TestReport` resource is narrowly defined to summarise results from `TestScript`s. This limited scope makes it ill-suited for representing results from testing frameworks that are dynamic or non-FHIR-standard. Attempts to force such results into FHIR's `TestReport` structure often result in a disorganised mess or require custom extensions that hinder interoperability.
+
+
+#### Potential future directions for the FHIR community to explore:
+
+Moving forward, reimagining `TestScript` as a more abstract and flexible resource would enable:
+
+  - Lowering the barrier to entry for test authors.
+  - Allowing dynamic testing systems like Inferno to represent their tests meaningfully within the FHIR ecosystem.
+  - Supporting broader interoperability by focusing on shared APIs for describing, executing, and reporting tests rather than enforcing a rigid workflow.
+
+This approach could strike a balance between the benefits of standardisation and the practical realities of diverse testing methodologies.
 
 ### Objectives for the Tool:
 
-Our goal is to create a tool that IG developers can `easily understand` and `maintain` while ensuring it is `machine-readable`. Unfortunately, combining `TestPlan` with `TestScript` does not meet this need due to `TestPlan`’s overly high-level narratives and `TestScript`'s complexity.
+Our goal is to develop a solution, supported by tooling, to identify and define test cases for an IG. Each major release of an Inferno Test Kit aims to deliver maximum feasible test coverage of the IG. A systematic approach to test planning, leveraging the structure of FHIR's `TestPlan`, will help ensure that the iterative development of the Inferno Test Kit and the IG are aligned, while tracking the Inferno Test Kit's test coverage of the IG.
+The solution should be easy to maintain: the developer of the IG can add/update/delete test cases using simple tooling whenever something is changed in the IG.
+
 
 ## Proposal
 
@@ -24,7 +47,9 @@ We think that the IG coverage pipeline can be implemented in a `feedback-driven`
 
 As a result, the Implementation Guide will have a TestPlan resource that is easy to understand, because it has a clear narrative and it can have or not have reference to the Inferno case ID.
 
-In this case, it will be easy to analyze the TestPlan test cases and compare them to the cases from the Inferno report.
+In this case, it will be easy to analyze the TestPlan test cases and compare them to the cases from the Inferno test report.
+
+Based on the challenges described above, we have chosen not to implement FHIR `TestScript` at this time, and instead referenced Inferno tests in an abstracted interpretation of `test script`.
 
 ### Feedback-driven TestCase development
 1. A TestPlan is initially generated with test cases derived from the CapabilityStatement and StructureDefinition resources using a generator, similar to how all tests are created.
